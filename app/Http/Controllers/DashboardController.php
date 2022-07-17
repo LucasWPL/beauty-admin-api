@@ -8,8 +8,25 @@ class DashboardController extends Controller
 {
     public function fakeData()
     {
-        $costumer = ['teste' => true];
+        $fakeData = [
+            'costumers' => [
+                'today' => 10,
+                'inMonth' => 100,
+            ],
+            'jobs' => [
+                'today' => 20,
+                'inMonth' => 200,
+            ],
+            'returns' => [
+                'today' => 30,
+                'inMonth' => 300,
+            ],
+            'records' => [
+                'today' => 40,
+                'inMonth' => 400,
+            ],
+        ];
 
-        return response()->json($costumer, 201);
+        return response()->json($fakeData, 200);
     }
 }
