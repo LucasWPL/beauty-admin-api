@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CostumerController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\JobController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('dashboard', [DashboardController::class, 'fakeData']);
+Route::get('dashboard', [DashboardController::class, 'cardsData']);
 
 /**
  * Costumers init
@@ -29,4 +30,18 @@ Route::delete('costumers/{id}', [CostumerController::class, 'deleteCostumer']);
 
 /**
  * Costumers end
+ */
+
+/**
+ * Jobs init
+ */
+
+Route::get('jobs', [JobController::class, 'getAllJobs']);
+Route::get('jobs/{id}', [JobController::class, 'getJob']);
+Route::post('jobs', [JobController::class, 'createJob']);
+Route::put('jobs/{id}', [JobController::class, 'updateJob']);
+Route::delete('jobs/{id}', [JobController::class, 'deleteJob']);
+
+/**
+ * Jobs end
  */

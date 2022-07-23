@@ -2,13 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Costumer;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
-    public function fakeData()
+    public function cardsData()
     {
-        $fakeData = [
+        $allCostumers = Costumer::get()->count();
+        $costumersRecordsInMonth = Costumer::whereMonth('created_at', date('m'))
+            ->whereYear('created_at', date('Y'))
+            ->get()
+            ->count();
+
+        $cardsData = [
             'costumers' => [
                 'today' => 10,
                 'inMonth' => 100,
@@ -22,11 +29,11 @@ class DashboardController extends Controller
                 'inMonth' => 300,
             ],
             'records' => [
-                'today' => 40,
-                'inMonth' => 400,
+                'today' => $allCostumers,
+                'inMonth' => $costumersRecordsInMonth,
             ],
         ];
 
-        return response()->json($fakeData, 200);
+        return response()->json($cardsData, 200);
     }
 }
