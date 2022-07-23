@@ -24,10 +24,24 @@ class CostumerController extends Controller
         ], 201);
     }
 
-    public function getAllCostumers()
+    public function getAllCostumers(Request $request)
     {
-        $costumers = Costumer::get()->toJson(JSON_PRETTY_PRINT);
-        return response($costumers, 200);
+        $costumers = Costumer::get();
+        if ($request->maxInPage && $request->currentPage) {
+            $allRecords = $costumers;
+            $skip = ($request->maxInPage * $request->currentPage) - $request->maxInPage;
+            $costumers = Costumer::skip($skip)->take($request->maxInPage)->get();
+
+            $pages = intval(count($allRecords) / $request->maxInPage) + 1;
+
+            $costumers = [
+                'filtred' => $costumers,
+                'allRecords' => $allRecords,
+                'pages' => $pages,
+            ];
+        }
+
+        return response()->json($costumers, 201);
     }
 
     public function getCostumer($id)
@@ -49,9 +63,9 @@ class CostumerController extends Controller
             $costumer->name = is_null($request->name) ? $costumer->name : $request->name;
             $costumer->phone = is_null($request->phone) ? $costumer->phone : $request->phone;
             $costumer->cpf = is_null($request->cpf) ? $costumer->cpf : $request->cpf;
-            $costumer->note = is_null($request->note) ? $costumer->cpf : $request->cpf;
-            $costumer->birth_date = is_null($request->birth_date) ? $costumer->cpf : $request->cpf;
-            $costumer->is_recommendation = is_null($request->is_recommendation) ? $costumer->cpf : $request->cpf;
+            $costumer->note = is_null($request->note) ? $costumer->note : $request->note;
+            $costumer->birth_date = is_null($request->birth_date) ? $costumer->birth_date : $request->birth_date;
+            $costumer->is_recommendation = is_null($request->is_recommendation) ? $costumer->is_recommendation : $request->is_recommendation;
 
             $costumer->save();
 
