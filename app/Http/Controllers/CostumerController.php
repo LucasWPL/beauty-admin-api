@@ -12,6 +12,11 @@ class CostumerController extends Controller
         $costumer = new Costumer();
         $costumer->name = $request->name;
         $costumer->phone = $request->phone;
+        $costumer->cpf = $request->cpf;
+        $costumer->note = $request->note;
+        $costumer->birth_date = $request->birth_date;
+        $costumer->is_recommendation = $request->is_recommendation;
+
         $costumer->save();
 
         return response()->json([
@@ -43,6 +48,11 @@ class CostumerController extends Controller
             $costumer = Costumer::find($id);
             $costumer->name = is_null($request->name) ? $costumer->name : $request->name;
             $costumer->phone = is_null($request->phone) ? $costumer->phone : $request->phone;
+            $costumer->cpf = is_null($request->cpf) ? $costumer->cpf : $request->cpf;
+            $costumer->note = is_null($request->note) ? $costumer->cpf : $request->cpf;
+            $costumer->birth_date = is_null($request->birth_date) ? $costumer->cpf : $request->cpf;
+            $costumer->is_recommendation = is_null($request->is_recommendation) ? $costumer->cpf : $request->cpf;
+
             $costumer->save();
 
             return response()->json([
