@@ -15,5 +15,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('costumers', [CostumerController::class, 'createCostumer']);
 Route::get('dashboard', [DashboardController::class, 'fakeData']);
+
+/**
+ * Costumers init
+ */
+
+Route::get('costumers', [CostumerController::class, 'getAllCostumers']);
+Route::get('costumers/{id}', [CostumerController::class, 'getCostumer']);
+Route::post('costumers', [CostumerController::class, 'createCostumer']);
+Route::put('costumers/{id}', [CostumerController::class, 'updateCostumer']);
+Route::delete('costumers/{id}', [CostumerController::class, 'deleteCostumer']);
+
+/**
+ * Costumers end
+ */
