@@ -10,4 +10,14 @@ use Illuminate\Routing\Controller as BaseController;
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+
+    protected function getNumberOfPages(int $total, int $max): int
+    {
+        $pages = intval($total / $max) + 1;
+        if ($total % $max == 0) {
+            $pages--;
+        }
+
+        return $pages;
+    }
 }

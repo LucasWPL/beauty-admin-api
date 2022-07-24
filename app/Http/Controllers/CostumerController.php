@@ -32,7 +32,7 @@ class CostumerController extends Controller
             $skip = ($request->maxInPage * $request->currentPage) - $request->maxInPage;
             $costumers = Costumer::skip($skip)->take($request->maxInPage)->get();
 
-            $pages = intval(count($allRecords) / $request->maxInPage) + 1;
+            $pages = $this->getNumberOfPages(count($allRecords), $request->maxInPage);
 
             $costumers = [
                 'filtred' => $costumers,
