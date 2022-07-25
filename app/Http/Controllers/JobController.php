@@ -19,10 +19,31 @@ class JobController extends Controller
         ], 201);
     }
 
-    public function getAllJobs()
+    public function getAllJobs(Request $request)
     {
-        $jobs = Job::get()->toJson(JSON_PRETTY_PRINT);
-        return response($jobs, 200);
+        $jobs = Job::join('costumers', 'jobs.costumer_id', '=', 'costumers.id')
+            ->select('jobs.*', 'costumers.name', 'costumers.phone')
+            ->get();
+
+        if ($request->maxInPage && $request->currentPage) {
+            $allRecords = $jobs;
+            $skip = ($request->maxInPage * $request->currentPage) - $request->maxInPage;
+            $jobs = Job::skip($skip)
+                ->take($request->maxInPage)
+                ->join('costumers', 'jobs.costumer_id', '=', 'costumers.id')
+                ->select('jobs.*', 'costumers.name', 'costumers.phone')
+                ->get();
+
+            $pages = $this->getNumberOfPages(count($allRecords), $request->maxInPage);
+
+            $jobs = [
+                'filtred' => $jobs,
+                'allRecords' => $allRecords,
+                'pages' => $pages,
+            ];
+        }
+
+        return response()->json($jobs, 201);
     }
 
     public function getJob($id)
