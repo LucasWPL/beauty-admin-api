@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Address;
 use App\Models\Costumer;
+use App\Models\CostumerAddress;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
@@ -19,10 +21,29 @@ class CostumerController extends Controller
         $costumer->is_recommendation = $request->is_recommendation;
 
         $costumer->save();
+        $this->saveCostumerAddress($costumer, $request);
 
         return response()->json([
             "message" => "Costumer record created"
         ], 201);
+    }
+
+    private function saveCostumerAddress(Costumer $costumer, Request $request)
+    {
+        $address = new Address();
+        $address->addressDetail = $request->addressDetail;
+        $address->city = $request->city;
+        $address->state = $request->state;
+        $address->country = $request->country;
+        $address->CEP = $request->CEP;
+
+        $address->save();
+
+        $costumerAddress = new CostumerAddress();
+        $costumerAddress->costumer_id = $costumer->id;
+        $costumerAddress->address_id = $address->id;
+
+        $costumerAddress->save();
     }
 
     public function getAllCostumers(Request $request)
@@ -65,12 +86,12 @@ class CostumerController extends Controller
     {
         if (Costumer::where('id', $id)->exists()) {
             $costumer = Costumer::find($id);
-            $costumer->name = is_null($request->name) ? $costumer->name : $request->name;
-            $costumer->phone = is_null($request->phone) ? $costumer->phone : $request->phone;
-            $costumer->cpf = is_null($request->cpf) ? $costumer->cpf : $request->cpf;
-            $costumer->note = is_null($request->note) ? $costumer->note : $request->note;
-            $costumer->birth_date = is_null($request->birth_date) ? $costumer->birth_date : $request->birth_date;
-            $costumer->is_recommendation = is_null($request->is_recommendation) ? $costumer->is_recommendation : $request->is_recommendation;
+            $costumer->name = $request->name ?? $costumer->name;
+            $costumer->phone = $request->phone ?? $costumer->phone;
+            $costumer->cpf = $request->cpf ?? $costumer->cpf;
+            $costumer->note = $request->note ?? $costumer->note;
+            $costumer->birth_date = $request->birth_date ?? $costumer->birth_date;
+            $costumer->is_recommendation = $request->is_recommendation ?? $costumer->is_recommendation;
 
             $costumer->save();
 

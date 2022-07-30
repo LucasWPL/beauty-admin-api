@@ -65,8 +65,8 @@ class JobController extends Controller
     {
         if (Job::where('id', $id)->exists()) {
             $job = Job::find($id);
-            $job->time = is_null($request->time) ? $job->time : $request->time;
-            $job->costumer_id = is_null($request->costumer_id) ? $job->costumer_id : $request->costumer_id;
+            $job->time = $request->time ?? $job->time;
+            $job->costumer_id = $request->costumer_id ?? $job->costumer_id;
             $job->save();
 
             return response()->json([
