@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Job;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
 class JobController extends Controller
@@ -26,24 +27,26 @@ class JobController extends Controller
             ->get();
 
         if ($request->maxInPage && $request->currentPage) {
-            $allRecords = $jobs;
-            $skip = ($request->maxInPage * $request->currentPage) - $request->maxInPage;
-            $jobs = Job::skip($skip)
-                ->take($request->maxInPage)
-                ->join('costumers', 'jobs.costumer_id', '=', 'costumers.id')
-                ->select('jobs.*', 'costumers.name', 'costumers.phone')
-                ->get();
-
-            $pages = $this->getNumberOfPages(count($allRecords), $request->maxInPage);
-
-            $jobs = [
-                'filtred' => $jobs,
-                'allRecords' => $allRecords,
-                'pages' => $pages,
-            ];
+            $jobs = $this->getAllJobsToGrid($request, $jobs);
         }
 
         return response()->json($jobs, 201);
+    }
+
+    private function getAllJobsToGrid(Request $request, Collection $allRecords)
+    {
+        $jobs = Job::skip($this->toSkipFromPageNumber($request->currentPage, $request->maxInPage))
+            ->take($request->maxInPage)
+            ->join('costumers', 'jobs.costumer_id', '=', 'costumers.id')
+            ->select('jobs.*', 'costumers.name', 'costumers.phone')
+            ->orderBy('id', 'DESC')
+            ->get();
+
+        return [
+            'filtred' => $jobs,
+            'allRecords' => $allRecords,
+            'pages' => $this->getNumberOfPages(count($allRecords), $request->maxInPage),
+        ];
     }
 
     public function getJob($id)

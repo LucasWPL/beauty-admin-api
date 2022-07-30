@@ -20,4 +20,9 @@ class Controller extends BaseController
 
         return $pages;
     }
+
+    protected function toSkipFromPageNumber(int $currentPage, int $maxInPage): int
+    {
+        return ($maxInPage * $currentPage) - $maxInPage;
+    }
 }

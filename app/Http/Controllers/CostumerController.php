@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Costumer;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
 class CostumerController extends Controller
@@ -28,20 +29,24 @@ class CostumerController extends Controller
     {
         $costumers = Costumer::get();
         if ($request->maxInPage && $request->currentPage) {
-            $allRecords = $costumers;
-            $skip = ($request->maxInPage * $request->currentPage) - $request->maxInPage;
-            $costumers = Costumer::skip($skip)->take($request->maxInPage)->get();
-
-            $pages = $this->getNumberOfPages(count($allRecords), $request->maxInPage);
-
-            $costumers = [
-                'filtred' => $costumers,
-                'allRecords' => $allRecords,
-                'pages' => $pages,
-            ];
+            $costumers = $this->getAllCostumersToGrid($request, $costumers);
         }
 
         return response()->json($costumers, 201);
+    }
+
+    private function getAllCostumersToGrid(Request $request, Collection $allRecords)
+    {
+        $costumers = Costumer::skip($this->toSkipFromPageNumber($request->currentPage, $request->maxInPage))
+            ->take($request->maxInPage)
+            ->orderBy('id', 'DESC')
+            ->get();
+
+        return [
+            'filtred' => $costumers,
+            'allRecords' => $allRecords,
+            'pages' => $this->getNumberOfPages(count($allRecords), $request->maxInPage),
+        ];
     }
 
     public function getCostumer($id)
