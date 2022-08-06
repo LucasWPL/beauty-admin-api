@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Job;
+use App\Models\JobProcedures;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
@@ -14,6 +15,20 @@ class JobController extends Controller
         $job->time = $request->time;
         $job->costumer_id = $request->costumer_id;
         $job->save();
+
+        foreach ($request->procedureList as $procedureValue) {
+            $procedure = new JobProcedures();
+
+            $procedure->job_id = $job->id;
+            $procedure->procedure_id = $procedureValue['procedure_id'];
+
+            $procedure->description = $procedureValue['description'];
+            $procedure->dificulty = $procedureValue['dificulty'];
+            $procedure->duration = $this->convertToMinsHours($procedureValue['duration']);
+            $procedure->value = $this->cleanCoin($procedureValue['value']);
+
+            $procedure->save();
+        }
 
         return response()->json([
             "message" => "Job record created"
