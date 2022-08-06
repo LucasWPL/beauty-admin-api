@@ -3,6 +3,7 @@
 use App\Http\Controllers\CostumerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JobController;
+use App\Http\Controllers\ProcedureController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -44,4 +45,18 @@ Route::delete('jobs/{id}', [JobController::class, 'deleteJob']);
 
 /**
  * Jobs end
+ */
+
+/**
+ * Procedure init
+ */
+
+Route::get('procedures', [ProcedureController::class, 'getAllProcedures']);
+Route::get('procedures/{id}', [ProcedureController::class, 'getProcedure']);
+Route::post('procedures', [ProcedureController::class, 'createProcedure']);
+Route::put('procedures/{id}', [ProcedureController::class, 'updateProcedure']);
+Route::delete('procedures/{id}', [ProcedureController::class, 'deleteProcedure']);
+
+/**
+ * Procedure end
  */
