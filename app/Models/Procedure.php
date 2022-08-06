@@ -10,5 +10,5 @@ class Procedure extends Model
     use HasFactory;
 
     protected $table = 'procedures';
-    protected $fillable = ['description', 'duration', 'value'];
+    protected $fillable = ['description', 'duration', 'value', 'dificulty'];
 }

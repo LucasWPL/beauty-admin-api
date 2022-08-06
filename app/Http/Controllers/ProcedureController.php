@@ -12,6 +12,7 @@ class ProcedureController extends Controller
     {
         $procedure = new Procedure();
         $procedure->description = $request->description;
+        $procedure->dificulty = $request->dificulty;
         $procedure->duration = $this->convertToMinsHours($request->duration);
         $procedure->value = $this->cleanCoin($request->value);
         $procedure->save();
@@ -27,11 +28,6 @@ class ProcedureController extends Controller
 
         if ($request->maxInPage && $request->currentPage) {
             $procedures = $this->getAllProceduresToGrid($request, $procedures);
-        }
-
-        foreach ($procedures as $key => $procedure) {
-            $procedures[$key]->value = $this->makeCoin($procedure->value);
-            $procedures[$key]->duration = $this->convertToHoursMins($procedure->duration);
         }
 
         return response()->json($procedures, 201);
