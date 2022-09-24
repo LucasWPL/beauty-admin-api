@@ -1,62 +1,39 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CostumerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JobController;
-use App\Http\Controllers\ProcedureController;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
+Route::get('dashboard', [DashboardController::class, 'cardsData'])->middleware('auth:sanctum');
 
-Route::get('dashboard', [DashboardController::class, 'cardsData']);
+Route::controller(AuthController::class)->group(function () {
+    Route::post('register', 'register');
+    Route::post('login', 'login');
+    Route::post('logout', 'logout')->middleware('auth:sanctum');
+});
 
-/**
- * Costumers init
- */
+Route::controller(CostumerController::class)->middleware('auth:sanctum')->group(function () {
+    Route::get('costumers', 'getAllCostumers');
+    Route::get('costumers/{id}', 'getCostumer');
+    Route::post('costumers', 'createCostumer');
+    Route::put('costumers/{id}', 'updateCostumer');
+    Route::delete('costumers/{id}', 'deleteCostumer');
+});
 
-Route::get('costumers', [CostumerController::class, 'getAllCostumers']);
-Route::get('costumers/{id}', [CostumerController::class, 'getCostumer']);
-Route::post('costumers', [CostumerController::class, 'createCostumer']);
-Route::put('costumers/{id}', [CostumerController::class, 'updateCostumer']);
-Route::delete('costumers/{id}', [CostumerController::class, 'deleteCostumer']);
+Route::controller(JobController::class)->middleware('auth:sanctum')->group(function () {
+    Route::get('jobs', 'getAllJobs');
+    Route::get('jobs/{id}', 'getJob');
+    Route::post('jobs', 'createJob');
+    Route::put('jobs/{id}', 'updateJob');
+    Route::delete('jobs/{id}', 'deleteJob');
+});
 
-/**
- * Costumers end
- */
-
-/**
- * Jobs init
- */
-
-Route::get('jobs', [JobController::class, 'getAllJobs']);
-Route::get('jobs/{id}', [JobController::class, 'getJob']);
-Route::post('jobs', [JobController::class, 'createJob']);
-Route::put('jobs/{id}', [JobController::class, 'updateJob']);
-Route::delete('jobs/{id}', [JobController::class, 'deleteJob']);
-
-/**
- * Jobs end
- */
-
-/**
- * Procedure init
- */
-
-Route::get('procedures', [ProcedureController::class, 'getAllProcedures']);
-Route::get('procedures/{id}', [ProcedureController::class, 'getProcedure']);
-Route::post('procedures', [ProcedureController::class, 'createProcedure']);
-Route::put('procedures/{id}', [ProcedureController::class, 'updateProcedure']);
-Route::delete('procedures/{id}', [ProcedureController::class, 'deleteProcedure']);
-
-/**
- * Procedure end
- */
+Route::controller(ProcedureController::class)->middleware('auth:sanctum')->group(function () {
+    Route::get('procedures', 'getAllProcedures');
+    Route::get('procedures/{id}', 'getProcedure');
+    Route::post('procedures', 'createProcedure');
+    Route::put('procedures/{id}', 'updateProcedure');
+    Route::delete('procedures/{id}', 'deleteProcedure');
+});
