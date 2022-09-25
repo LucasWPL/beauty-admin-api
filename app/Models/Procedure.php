@@ -2,13 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-
-class Procedure extends Model
+class Procedure extends GenericModel
 {
-    use HasFactory;
-
     protected $table = 'procedures';
     protected $fillable = ['description', 'duration', 'value', 'dificulty'];
 }

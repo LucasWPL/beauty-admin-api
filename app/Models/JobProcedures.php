@@ -2,13 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-
-class JobProcedures extends Model
+class JobProcedures extends GenericModel
 {
-    use HasFactory;
-
     protected $table = 'job_procedures';
     protected $fillable = [
         'job_id',

@@ -13,14 +13,8 @@ class CostumerController extends Controller
     public function createCostumer(Request $request)
     {
         $costumer = new Costumer();
-        $costumer->name = $request->name;
-        $costumer->phone = $request->phone;
-        $costumer->cpf = $request->cpf;
-        $costumer->note = $request->note;
-        $costumer->birth_date = $request->birth_date;
-        $costumer->is_recommendation = $request->is_recommendation;
+        $costumer->parseValuesFromRequest($request)->save();
 
-        $costumer->save();
         $this->saveCostumerAddress($costumer, $request);
 
         return response()->json([
@@ -31,19 +25,11 @@ class CostumerController extends Controller
     private function saveCostumerAddress(Costumer $costumer, Request $request)
     {
         $address = new Address();
-        $address->addressDetail = $request->addressDetail;
-        $address->city = $request->city;
-        $address->state = $request->state;
-        $address->country = $request->country;
-        $address->CEP = $request->CEP;
-
-        $address->save();
+        $address->parseValuesFromRequest($request)->save();
 
         $costumerAddress = new CostumerAddress();
         $costumerAddress->costumer_id = $costumer->id;
         $costumerAddress->address_id = $address->id;
-
-        $costumerAddress->save();
     }
 
     public function getAllCostumers(Request $request)
@@ -86,14 +72,7 @@ class CostumerController extends Controller
     {
         if (Costumer::where('id', $id)->exists()) {
             $costumer = Costumer::find($id);
-            $costumer->name = $request->name ?? $costumer->name;
-            $costumer->phone = $request->phone ?? $costumer->phone;
-            $costumer->cpf = $request->cpf ?? $costumer->cpf;
-            $costumer->note = $request->note ?? $costumer->note;
-            $costumer->birth_date = $request->birth_date ?? $costumer->birth_date;
-            $costumer->is_recommendation = $request->is_recommendation ?? $costumer->is_recommendation;
-
-            $costumer->save();
+            $costumer->parseValuesFromRequest($request)->save();
 
             return response()->json([
                 "message" => "records updated successfully"
