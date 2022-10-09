@@ -30,6 +30,7 @@ class CostumerController extends Controller
         $costumerAddress = new CostumerAddress();
         $costumerAddress->costumer_id = $costumer->id;
         $costumerAddress->address_id = $address->id;
+        $costumerAddress->save();
     }
 
     public function getAllCostumers(Request $request)
@@ -59,7 +60,21 @@ class CostumerController extends Controller
     public function getCostumer($id)
     {
         if (Costumer::where('id', $id)->exists()) {
-            $costumer = Costumer::where('id', $id)->get()->toJson(JSON_PRETTY_PRINT);
+            $costumer = Costumer::where('costumers.id', $id)
+                ->leftJoin('costumer_addresses', 'costumer_addresses.costumer_id', '=', 'costumers.id')
+                ->leftJoin('addresses', 'addresses.id', '=', 'costumer_addresses.address_id')
+                ->select(
+                    'costumers.*',
+                    'costumer_addresses.address_id',
+                    'addresses.addressDetail',
+                    'addresses.city',
+                    'addresses.state',
+                    'addresses.country',
+                    'addresses.CEP',
+                )
+                ->get()
+                ->toJson(JSON_PRETTY_PRINT);
+
             return response($costumer, 200);
         } else {
             return response()->json([
