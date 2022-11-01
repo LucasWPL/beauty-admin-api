@@ -53,8 +53,12 @@ class JobController extends Controller
         $jobs = Job::skip($this->toSkipFromPageNumber($request->currentPage, $request->maxInPage))
             ->take($request->maxInPage)
             ->join('costumers', 'jobs.costumer_id', '=', 'costumers.id')
+            ->leftJoin('job_procedures', 'jobs.id', '=', 'job_procedures.job_id')
             ->select('jobs.*', 'costumers.name', 'costumers.phone')
+            ->selectRaw('GROUP_CONCAT(job_procedures.description) as procedures_list')
+            ->selectRaw('SUM(job_procedures.duration) as duration')
             ->orderBy('id', 'DESC')
+            ->groupBy('jobs.id')
             ->get();
 
         return [
