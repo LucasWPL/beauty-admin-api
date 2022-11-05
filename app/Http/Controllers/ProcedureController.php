@@ -61,13 +61,14 @@ class ProcedureController extends Controller
 
     public function updateProcedure(Request $request, $id)
     {
-        // @todo
-        return;
-
         if (Procedure::where('id', $id)->exists()) {
             $procedure = Procedure::find($id);
-            $procedure->time = $request->time ?? $procedure->time;
-            $procedure->costumer_id = $request->costumer_id ?? $procedure->costumer_id;
+
+            $procedure->description = $request->description ?? $procedure->description;
+            $procedure->dificulty = $request->dificulty ?? $procedure->dificulty;
+            $procedure->duration = $this->convertToMinsHours($request->duration) ?? $procedure->duration;
+            $procedure->value = $this->cleanCoin($request->value) ?? $procedure->value;
+
             $procedure->save();
 
             return response()->json([
