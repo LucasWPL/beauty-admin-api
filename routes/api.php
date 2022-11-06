@@ -19,7 +19,7 @@ Route::controller(CostumerController::class)->middleware('auth:sanctum')->group(
     Route::get('costumers', 'getAllCostumers');
     Route::get('costumers/{id}', 'getCostumer');
     Route::post('costumers', 'createCostumer');
-    Route::put('costumers/{id}', 'updateCostumer');
+    Route::post('costumers/{id}', 'updateCostumer');
     Route::delete('costumers/{id}', 'deleteCostumer');
 });
 
