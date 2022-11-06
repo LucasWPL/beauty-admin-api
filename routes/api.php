@@ -27,7 +27,7 @@ Route::controller(JobController::class)->middleware('auth:sanctum')->group(funct
     Route::get('jobs', 'getAllJobs');
     Route::get('jobs/{id}', 'getJob');
     Route::post('jobs', 'createJob');
-    Route::put('jobs/{id}', 'updateJob');
+    Route::put('jobs/finish/{id}', 'finishJob');
     Route::delete('jobs/{id}', 'deleteJob');
 });
 

@@ -57,7 +57,7 @@ class JobController extends Controller
             ->select('jobs.*', 'costumers.name', 'costumers.phone')
             ->selectRaw('GROUP_CONCAT(job_procedures.description) as procedures_list')
             ->selectRaw('SUM(job_procedures.duration) as duration')
-            ->orderBy('id', 'DESC')
+            ->orderBy('status', 'DESC')
             ->groupBy('jobs.id')
             ->get();
 
@@ -80,12 +80,11 @@ class JobController extends Controller
         }
     }
 
-    public function updateJob(Request $request, $id)
+    public function finishJob(Request $request, $id)
     {
         if (Job::where('id', $id)->exists()) {
             $job = Job::find($id);
-            $job->time = $request->time ?? $job->time;
-            $job->costumer_id = $request->costumer_id ?? $job->costumer_id;
+            $job->status = Job::STATUS_FINALIZADO;
             $job->save();
 
             return response()->json([
@@ -97,6 +96,24 @@ class JobController extends Controller
             ], 404);
         }
     }
+
+    // public function updateJob(Request $request, $id)
+    // {
+    //     if (Job::where('id', $id)->exists()) {
+    //         $job = Job::find($id);
+    //         $job->time = $request->time ?? $job->time;
+    //         $job->costumer_id = $request->costumer_id ?? $job->costumer_id;
+    //         $job->save();
+
+    //         return response()->json([
+    //             "message" => "records updated successfully"
+    //         ], 200);
+    //     } else {
+    //         return response()->json([
+    //             "message" => "Job not found"
+    //         ], 404);
+    //     }
+    // }
 
     public function deleteJob($id)
     {
