@@ -19,7 +19,7 @@ Route::controller(CostumerController::class)->middleware('auth:sanctum')->group(
     Route::get('costumers', 'getAllCostumers');
     Route::get('costumers/{id}', 'getCostumer');
     Route::post('costumers', 'createCostumer');
-    Route::put('costumers/{id}', 'updateCostumer');
+    Route::post('costumers/{id}', 'updateCostumer');
     Route::delete('costumers/{id}', 'deleteCostumer');
 });
 
@@ -27,7 +27,7 @@ Route::controller(JobController::class)->middleware('auth:sanctum')->group(funct
     Route::get('jobs', 'getAllJobs');
     Route::get('jobs/{id}', 'getJob');
     Route::post('jobs', 'createJob');
-    Route::put('jobs/{id}', 'updateJob');
+    Route::put('jobs/finish/{id}', 'finishJob');
     Route::delete('jobs/{id}', 'deleteJob');
 });
 
