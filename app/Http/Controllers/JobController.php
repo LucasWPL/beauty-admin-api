@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Costumer;
 use App\Models\Job;
 use App\Models\JobProcedures;
 use Illuminate\Database\Eloquent\Collection;
@@ -11,6 +12,19 @@ class JobController extends Controller
 {
     public function createJob(Request $request)
     {
+        $request->validate([
+            'procedureList' => 'required',
+        ]);
+
+        if ($request->pre_registration == "true") {
+            $costumer = new Costumer();
+            $costumer->name = $request->costumer_name;
+            $costumer->phone = $request->costumer_phone;
+            $costumer->save();
+
+            $request->costumer_id = $costumer->id;
+        }
+
         $job = new Job();
         $job->time = $request->time;
         $job->costumer_id = $request->costumer_id;
@@ -57,6 +71,7 @@ class JobController extends Controller
             ->select('jobs.*', 'costumers.name', 'costumers.phone')
             ->selectRaw('GROUP_CONCAT(job_procedures.description) as procedures_list')
             ->selectRaw('SUM(job_procedures.duration) as duration')
+            ->orderBy('jobs.id', 'DESC')
             ->orderBy('status', 'DESC')
             ->groupBy('jobs.id')
             ->get();
