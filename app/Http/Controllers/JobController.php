@@ -71,8 +71,8 @@ class JobController extends Controller
             ->select('jobs.*', 'costumers.name', 'costumers.phone')
             ->selectRaw('GROUP_CONCAT(job_procedures.description) as procedures_list')
             ->selectRaw('SUM(job_procedures.duration) as duration')
-            ->orderBy('jobs.id', 'DESC')
             ->orderBy('status', 'DESC')
+            ->orderBy('jobs.id', 'DESC')
             ->groupBy('jobs.id')
             ->get();
 

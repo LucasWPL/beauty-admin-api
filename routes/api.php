@@ -7,7 +7,7 @@ use App\Http\Controllers\JobController;
 use App\Http\Controllers\ProcedureController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('dashboard', [DashboardController::class, 'cardsData'])->middleware('auth:sanctum');
+Route::get('dashboard', [DashboardController::class, 'allData'])->middleware('auth:sanctum');
 
 Route::controller(AuthController::class)->group(function () {
     Route::post('register', 'register');
