@@ -5,10 +5,35 @@ namespace App\Http\Controllers;
 use App\Models\Costumer;
 use App\Models\Job;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
-    public function cardsData()
+    public function allData()
+    {
+        $allData = [
+            'cards' => $this->cardsData(),
+            'procedures_today' => $this->proceduresToday()
+        ];
+
+        return response()->json($allData, 200);
+    }
+
+    private function proceduresToday()
+    {
+        return Job::leftJoin('job_procedures', 'jobs.id', '=', 'job_procedures.job_id')
+            ->join('costumers', 'jobs.costumer_id', '=', 'costumers.id')
+            ->select('jobs.*', 'costumers.name', 'costumers.phone')
+            ->selectRaw('GROUP_CONCAT(job_procedures.description) as procedures_list')
+            ->selectRaw('SUM(job_procedures.value) as procedures_value')
+            ->whereDate('time', Carbon::today())
+            ->where('status', Job::STATUS_PENDENTE)
+            ->groupBy('jobs.id')
+            ->orderBy('time')
+            ->get();
+    }
+
+    private function cardsData()
     {
 
         $costumersToday = Job::whereDate('time', Carbon::today())->groupBy('costumer_id')->get()->count();
@@ -49,6 +74,6 @@ class DashboardController extends Controller
             ],
         ];
 
-        return response()->json($cardsData, 200);
+        return $cardsData;
     }
 }
